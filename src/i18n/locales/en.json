@@ -1,0 +1,82 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "back": "Back",
+    "loading": "Loading…",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "home": "Home",
+    "myJobs": "My Jobs",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help": "Help & Support"
+  },
+  "home": {
+    "greeting": "Hi {{name}}",
+    "whatNeed": "What do you need today?",
+    "browseAll": "Browse all categories",
+    "searchPlaceholder": "Search a service…"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "darkMode": "Dark Mode",
+    "darkModeSub": "Switch between light and dark theme",
+    "notifications": "Notifications",
+    "mutePromos": "Mute Promos",
+    "mutePromosSub": "Hide marketing messages from the notifications list and pushes",
+    "quietHours": "Quiet Hours",
+    "quietHoursSub": "Silence non-urgent pushes between 10 PM – 7 AM (active job alerts still ring)",
+    "requestSound": "Request Sound",
+    "requestSoundSub": "Play a sound when a new request arrives",
+    "pushNotifications": "Push Notifications",
+    "pushNotificationsSub": "Show incoming request popup",
+    "emailReceipts": "Email Receipts",
+    "emailReceiptsSub": "Send payment & withdrawal receipts",
+    "region": "Region",
+    "language": "Language",
+    "currency": "Currency",
+    "currencySub": "INR (₹)",
+    "account": "Account",
+    "deleteAccount": "Delete account",
+    "deleteAccountSub": "Permanently remove your data after a 7-day grace period",
+    "comingSoon": "Coming soon",
+    "saved": "Settings saved",
+    "version": "ServiceLink v0.1.0 • Made in India"
+  },
+  "profile": {
+    "personalInfo": "Personal Info",
+    "fullName": "Full Name",
+    "mobile": "Mobile",
+    "email": "Email",
+    "addresses": "Saved addresses",
+    "trustedContacts": "Trusted contacts",
+    "edit": "Edit My Details"
+  },
+  "help": {
+    "title": "Help & Support",
+    "heroTitle": "We're here to help",
+    "heroSub": "Browse the FAQs below or reach us directly — our team replies within a few minutes during business hours.",
+    "reachUs": "Reach us",
+    "whatsApp": "Chat with us on WhatsApp",
+    "email": "Email us",
+    "call": "Call support",
+    "reportBug": "Report a bug",
+    "reportBugSub": "Tell us about something that's not working",
+    "faq": "Frequently asked questions"
+  },
+  "deleteAccount": {
+    "title": "Delete account?",
+    "warning": "Your account will be soft-deleted now and permanently removed after 7 days. You can cancel anytime before then.",
+    "confirm": "Yes, delete",
+    "scheduled": "Account scheduled for deletion in {{days}} days. Sign in any time to cancel.",
+    "cancel": "Cancel deletion",
+    "cancelled": "Deletion cancelled. Welcome back."
+  }
+}

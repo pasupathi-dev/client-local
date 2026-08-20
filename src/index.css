@@ -1,0 +1,317 @@
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────────────────
+   Design tokens — warm-beige + brand-orange "ServiceLink" system.
+   Variable NAMES are kept stable (--accent, --surface, --card, --text,
+   --muted, --border, --r, --rs, etc.) so every existing component class
+   like `bg-accent` / `text-muted` / `rounded-[var(--rs)]` automatically
+   picks up the new look without any logic change. New tokens are added
+   alongside (never replacing) so legacy classes still resolve.
+   ────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Ink (deep neutrals) — used for "dark hero" surfaces (status hero, login
+     panel, onboarding panel). Existing components reference `bg-brand`; we
+     keep that mapped to ink so those callsites continue to render dark.
+     The new --ink alias is the canonical design-system name for the same
+     color (status-hero gradient base). */
+  --brand:        #0E1116;       /* alias for --ink (legacy callsites) */
+  --brand2:       #1A1F28;       /* alias for --ink2 */
+  --ink:          #0E1116;
+  --ink2:         #1A1F28;
+
+  /* Accent — the warm brand-orange used for CTAs, badges, focus rings.
+     Soft + glow are the accent-tinted utility tokens from the mock.
+     accent-deep is the rich orange used for gradient ends (e.g. avatar). */
+  --accent:       #FF5A1F;
+  --accent2:      #FF8A3D;
+  --accent-deep:  #E04812;
+  --brand-soft:   #FFF1EA;
+  --brand-glow:   rgba(255, 90, 31, 0.18);
+
+  /* Text */
+  --text:         #15181E;
+  --muted:        #6B6F78;
+  --light:        #9CA0A8;
+
+  /* Borders + surfaces — warm */
+  --border:       #ECE9E2;
+  --border-strong:#DCD8CF;
+  --surface:      #F4F1E9;       /* page background (warm beige) */
+  --surface-2:    #FAF8F3;       /* alt section background */
+  --card:         #FFFFFF;       /* card surface */
+
+  /* Semantic */
+  --success:      #0F9D6A;
+  --success-soft: #E5F6EE;
+  --danger:       #D7263D;
+  --warn:         #E9A63B;
+  --info:         #2563EB;
+
+  /* Radii — the existing --r / --rs names kept for back-compat;
+     new ones added for the design system's full scale. */
+  --r:    22px;   /* card radius (was 14) — softer pill-like cards */
+  --rs:   12px;   /* small control radius (was 9) */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(14, 17, 22, 0.04), 0 1px 1px rgba(14, 17, 22, 0.03);
+  --shadow-md: 0 4px 14px -4px rgba(14, 17, 22, 0.08), 0 2px 6px -2px rgba(14, 17, 22, 0.04);
+  --shadow-lg: 0 24px 48px -16px rgba(14, 17, 22, 0.12), 0 8px 16px -8px rgba(14, 17, 22, 0.06);
+}
+html[data-theme='dark'] {
+  --brand:        #0E1116;
+  --brand2:       #1A1F28;
+  --ink:          #F5F2EC;
+  --ink2:         #DCD8CF;
+  --accent:       #FF8A3D;
+  --accent2:      #FFB07A;
+  --brand-soft:   #2A1B12;
+  --brand-glow:   rgba(255, 138, 61, 0.22);
+  --text:         #F3F4F6;
+  --muted:        #9CA0A8;
+  --light:        #6B6F78;
+  --border:       #252B3D;
+  --border-strong:#3A4258;
+  --surface:      #0E1116;
+  --surface-2:    #15181E;
+  --card:         #161C2E;
+  --success:      #34D399;
+  --success-soft: rgba(52,211,153,0.14);
+  --danger:       #F87171;
+  --warn:         #F59E0B;
+  --info:         #3B82F6;
+}
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-image:
+      radial-gradient(1200px 600px at 90% -10%, rgba(255, 90, 31, 0.08), transparent 60%),
+      radial-gradient(800px 500px at -10% 30%, rgba(255, 153, 51, 0.05), transparent 60%);
+    transition: background-color .25s, color .25s;
+  }
+  /* Display headings get the geometric Bricolage face — `font-display` in
+     Tailwind, plus the implicit h1/h2/h3 fallback for legacy markup. */
+  h1, h2, h3, .display {
+    font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', system-ui, sans-serif;
+    letter-spacing: -0.015em;
+  }
+  /* Italic-serif accent class for the "—" / pricing / numerals flourish */
+  .font-serif-italic {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+}
+
+@layer components {
+  /* Primary CTA — flat ink button (mock's "Today's view" style) */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-[color:var(--ink)] text-white
+           font-semibold rounded-[12px] px-5 py-3 transition
+           hover:bg-black disabled:opacity-60 disabled:cursor-not-allowed;
+    box-shadow: var(--shadow-md);
+  }
+  /* Secondary CTA — white pill with hairline border (mock's "Add request") */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-card border border-border text-text
+           font-semibold rounded-[12px] px-4 py-2 transition
+           hover:border-[color:var(--ink)] hover:-translate-y-px;
+    box-shadow: var(--shadow-sm);
+  }
+  /* Loud brand CTA — used by onboarding / payment flows. Orange + glow. */
+  .ob-cta {
+    @apply flex-1 w-full py-[15px] lg:py-[17px] rounded-[12px] bg-accent text-white
+           font-display font-extrabold text-[15px] lg:text-base
+           hover:brightness-95 transition
+           disabled:bg-border disabled:text-muted disabled:shadow-none disabled:cursor-not-allowed;
+    box-shadow: 0 12px 28px -10px var(--brand-glow), 0 4px 10px -4px var(--brand-glow);
+  }
+  .ob-cta:disabled { box-shadow: none; }
+
+  /* Card surface — soft border, large radius, subtle hover lift */
+  .card {
+    @apply bg-card border border-border rounded-[var(--r-lg)];
+    transition: box-shadow .25s ease;
+  }
+  .card:hover { box-shadow: var(--shadow-md); }
+
+  /* Pill chip — generic */
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+  .chip-on  { @apply bg-accent text-white; }
+  .chip-off { @apply bg-card text-muted border border-border; }
+
+  /* Form input — warm border + brand focus */
+  .input {
+    @apply w-full border border-border bg-card text-text rounded-[12px]
+           px-3.5 py-2.5 outline-none transition
+           placeholder:text-light
+           focus:border-accent focus:shadow-[0_0_0_3px_var(--brand-glow)];
+  }
+
+  /* Avatar palette — warm tints (A=brand orange, B=blue, C=teal, D=plum, E=rose) */
+  .pav-a { background: linear-gradient(135deg, #FFE5D2, #FFCFA8); color: #B43F0E; }
+  .pav-b { background: linear-gradient(135deg, #DBEAFE, #BFDBFE); color: #1E40AF; }
+  .pav-c { background: linear-gradient(135deg, #DCFCE7, #BBF7D0); color: #166534; }
+  .pav-d { background: linear-gradient(135deg, #EDE9FE, #DDD6FE); color: #5B21B6; }
+  .pav-e { background: linear-gradient(135deg, #FCE7F3, #FBCFE8); color: #9D174D; }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+  .animate-fadeIn { animation: fadeIn .25s ease; }
+  .animate-pgIn   { animation: pgIn .22s ease; }
+  .animate-popIn   { animation: popIn .5s ease; }
+  .animate-slideUp { animation: slideUp .3s cubic-bezier(0.16,1,0.3,1); }
+  /* Dot that travels along a horizontal connector line (how-it-works flow). */
+  .animate-travelX { animation: travelX 2s linear infinite; }
+  /* Orbit a child around its container centre (how-it-works circle diagram). */
+  .animate-orbit       { animation: orbit 16s linear infinite; }
+  .animate-orbit-slow  { animation: orbit 60s linear infinite; }
+  /* Counter-rotate (same period) so an orbiting child stays upright. */
+  .animate-orbit-rev   { animation: orbit 16s linear infinite reverse; }
+  .animate-successBurst  { animation: successBurst .7s cubic-bezier(.22,1,.36,1); }
+  .animate-successRing   { animation: successRing 1.8s ease-out infinite; }
+  .animate-successRingB  { animation: successRing 1.8s ease-out infinite .6s; }
+  .animate-checkDraw     {
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: checkDraw .55s .35s ease forwards;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pgIn   { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes popIn    { 0% { transform: scale(.5); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes slideUp  { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes travelX  { 0% { left: 2px; opacity: 0 } 15% { opacity: 1 } 85% { opacity: 1 } 100% { left: calc(100% - 12px); opacity: 0 } }
+  @keyframes orbit    { to { transform: rotate(360deg); } }
+  @keyframes mapPulse { 0%, 100% { transform: scale(1); opacity: .4 } 50% { transform: scale(1.8); opacity: 0 } }
+  @keyframes successBurst {
+    0%   { transform: scale(0);    opacity: 0; }
+    55%  { transform: scale(1.15); opacity: 1; }
+    80%  { transform: scale(.95); }
+    100% { transform: scale(1);    opacity: 1; }
+  }
+  @keyframes successRing {
+    0%   { transform: scale(.6); opacity: .55; }
+    100% { transform: scale(2.1); opacity: 0; }
+  }
+  @keyframes checkDraw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* Payment celebration — used by the partner's "Payment Completed" popup. */
+  .animate-coinRain  { animation: coinRain 2.6s cubic-bezier(.33,0,.4,1) forwards; }
+  .animate-moneyPop  { animation: moneyPop .9s cubic-bezier(.2,.8,.3,1.1) both; }
+  .animate-moneyShake { animation: moneyShake .6s ease both; animation-delay: .9s; }
+  .animate-confettiBurst { animation: confettiBurst 1.3s cubic-bezier(.22,1,.36,1) forwards; }
+  .animate-glowPulse { animation: glowPulse 1.4s ease-in-out infinite; }
+
+  @keyframes coinRain {
+    0%   { transform: translate3d(0,-120%,0) rotate(0deg);   opacity: 0; }
+    10%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translate3d(var(--dx,0),120vh,0) rotate(720deg); opacity: 0; }
+  }
+  @keyframes moneyPop {
+    0%   { transform: scale(.3) translateY(20px); opacity: 0; filter: blur(4px); }
+    60%  { transform: scale(1.15) translateY(-4px); opacity: 1; filter: blur(0); }
+    80%  { transform: scale(.96); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes moneyShake {
+    0%,100% { transform: translateX(0) rotate(0); }
+    15% { transform: translateX(-6px) rotate(-1.5deg); }
+    30% { transform: translateX(6px)  rotate(1.5deg); }
+    45% { transform: translateX(-4px) rotate(-1deg); }
+    60% { transform: translateX(4px)  rotate(1deg); }
+    75% { transform: translateX(-2px) rotate(-.5deg); }
+  }
+  @keyframes confettiBurst {
+    0%   { transform: translate3d(0,0,0) scale(1) rotate(0); opacity: 0; }
+    15%  { opacity: 1; }
+    100% { transform: translate3d(var(--cx,0),var(--cy,-80vh),0) scale(.4) rotate(var(--cr,720deg)); opacity: 0; }
+  }
+  @keyframes glowPulse {
+    0%,100% { box-shadow: 0 12px 32px rgba(16,185,129,0.45), 0 0 0 0 rgba(16,185,129,0.55); }
+    50%     { box-shadow: 0 12px 32px rgba(16,185,129,0.6),  0 0 0 24px rgba(16,185,129,0); }
+  }
+
+  /* Status-hero "online" dot — ring-expansion pulse used by the partner
+     dashboard's availability tag. Defined as a global @keyframes so the
+     inline `animation: pulse 1.8s infinite` style works.  */
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.6); }
+    50%      { box-shadow: 0 0 0 10px rgba(52,211,153,0); }
+  }
+
+  /* Request "waiting for partner" popup — radar sweep + rolling dashed
+     ring + gentle breathing avatar. */
+  .animate-radarRing    { animation: radarRing 2.2s ease-out infinite; }
+  .animate-radarRingB   { animation: radarRing 2.2s ease-out infinite .7s; }
+  .animate-radarRingC   { animation: radarRing 2.2s ease-out infinite 1.4s; }
+  .animate-rollingRing  { animation: rollingRing 3s linear infinite; }
+  .animate-rollingRingX { animation: rollingRing 4s linear infinite reverse; }
+  .animate-avatarBreathe { animation: avatarBreathe 2.4s ease-in-out infinite; }
+  .animate-dotBob       { animation: dotBob 1.2s ease-in-out infinite; }
+
+  @keyframes radarRing {
+    0%   { transform: scale(.4); opacity: .65; }
+    100% { transform: scale(2.1); opacity: 0; }
+  }
+  @keyframes rollingRing {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes avatarBreathe {
+    0%,100% { transform: scale(1); }
+    50%     { transform: scale(1.06); }
+  }
+  @keyframes dotBob {
+    0%,80%,100% { transform: translateY(0);    opacity: .4; }
+    40%         { transform: translateY(-4px); opacity: 1; }
+  }
+}
+
+/* Leaflet zoom control polish — matches local.html:208-209 */
+.leaflet-control-zoom a {
+  width: 32px !important; height: 32px !important; line-height: 32px !important;
+  font-size: 16px !important; border-radius: 0 !important;
+}
+.leaflet-control-zoom {
+  border-radius: 8px !important; overflow: hidden;
+  box-shadow: var(--shadow, 0 2px 12px rgba(0,0,0,0.08)) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* ── Swiggy-style professional map pin ──
+   The marker HTML is rendered inside a Leaflet divIcon; we position the
+   emoji absolutely over the badge and lean on --pin-c (set inline) for the
+   category-specific tint on the outer teardrop. */
+.sl-pro-pin-wrap { background: transparent !important; border: 0 !important; }
+.sl-pro-pin {
+  position: relative; width: 42px; height: 54px; line-height: 1;
+  transition: transform .15s ease;
+}
+.sl-pro-pin:hover { transform: translateY(-2px) scale(1.06); }
+.sl-pro-pin__emoji {
+  position: absolute; left: 50%; top: 19px;
+  transform: translate(-50%, -50%);
+  font-size: 16px; line-height: 1;
+  pointer-events: none;
+}
+
